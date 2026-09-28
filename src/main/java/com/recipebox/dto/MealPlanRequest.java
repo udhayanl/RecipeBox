@@ -1,0 +1,78 @@
+package com.recipebox.dto;
+
+import com.recipebox.entity.MealType;
+import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
+
+public class MealPlanRequest {
+
+    @NotNull(message = "Meal date is required")
+    private LocalDate mealDate;
+
+    @NotNull(message = "Meal type is required")
+    private MealType mealType;
+
+    @NotNull(message = "Recipe ID is required")
+    private Long recipeId;
+
+    private Long userId;
+
+    private String notes;
+
+    public MealPlanRequest() {
+    }
+
+    public MealPlanRequest(LocalDate mealDate, MealType mealType, Long recipeId) {
+        this.mealDate = mealDate;
+        this.mealType = mealType;
+        this.recipeId = recipeId;
+    }
+
+    public MealPlanRequest(LocalDate mealDate, MealType mealType, Long recipeId, Long userId, String notes) {
+        this.mealDate = mealDate;
+        this.mealType = mealType;
+        this.recipeId = recipeId;
+        this.userId = userId;
+        this.notes = notes;
+    }
+
+    public LocalDate getMealDate() {
+        return mealDate;
+    }
+
+    public void setMealDate(LocalDate mealDate) {
+        this.mealDate = mealDate;
+    }
+
+    public MealType getMealType() {
+        return mealType;
+    }
+
+    public void setMealType(MealType mealType) {
+        this.mealType = mealType;
+    }
+
+    public Long getRecipeId() {
+        return recipeId;
+    }
+
+    public void setRecipeId(Long recipeId) {
+        this.recipeId = recipeId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+}
