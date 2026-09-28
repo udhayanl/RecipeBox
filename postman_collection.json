@@ -1,0 +1,467 @@
+{
+	"info": {
+		"_postman_id": "9b12d5e4-8461-4fa3-9f15-779836934c56",
+		"name": "RecipeBox API",
+		"description": "Comprehensive Postman collection for RecipeBox – Personal Recipe and Meal Planner REST API.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "1",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Chef Gordon\",\n    \"email\": \"gordon@example.com\",\n    \"password\": \"secretPass123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users"]
+						}
+					}
+				},
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/users",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users"]
+						}
+					}
+				},
+				{
+					"name": "Get User by ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/users/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Chef Gordon Ramsay\",\n    \"email\": \"gordon@example.com\",\n    \"password\": \"newPassword456\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/api/users/2",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "users", "2"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Recipes",
+			"item": [
+				{
+					"name": "Create Recipe",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "{{userId}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Vegetable Pasta\",\n    \"cuisine\": \"Italian\",\n    \"description\": \"Simple vegetable pasta\",\n    \"preparationTime\": 20,\n    \"cookingSteps\": \"Boil pasta, prepare vegetables, mix together\",\n    \"userId\": 1,\n    \"ingredients\": [\n        {\n            \"ingredientName\": \"Pasta\",\n            \"quantity\": 200,\n            \"unit\": \"grams\"\n        },\n        {\n            \"ingredientName\": \"Tomato\",\n            \"quantity\": 3,\n            \"unit\": \"pieces\"\n        },\n        {\n            \"ingredientName\": \"Oil\",\n            \"quantity\": 2,\n            \"unit\": \"tablespoon\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/recipes",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "recipes"]
+						}
+					}
+				},
+				{
+					"name": "Get All Recipes",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/recipes",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "recipes"]
+						}
+					}
+				},
+				{
+					"name": "Get Recipe by ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/recipes/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "recipes", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update Recipe",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "{{userId}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Creamy Vegetable Pasta\",\n    \"cuisine\": \"Italian\",\n    \"description\": \"Upgraded creamy vegetable pasta with parmesan\",\n    \"preparationTime\": 25,\n    \"cookingSteps\": \"Boil pasta, saute garlic and vegetables, add cream and cheese, mix thoroughly\",\n    \"ingredients\": [\n        {\n            \"ingredientName\": \"Pasta\",\n            \"quantity\": 250,\n            \"unit\": \"grams\"\n        },\n        {\n            \"ingredientName\": \"Tomato\",\n            \"quantity\": 3,\n            \"unit\": \"pieces\"\n        },\n        {\n            \"ingredientName\": \"Cheese\",\n            \"quantity\": 50,\n            \"unit\": \"grams\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/recipes/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "recipes", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Recipe",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "{{userId}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/recipes/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "recipes", "1"]
+						}
+					}
+				},
+				{
+					"name": "Search Recipes by Cuisine",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/recipes/search?cuisine=Italian",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "recipes", "search"],
+							"query": [
+								{
+									"key": "cuisine",
+									"value": "Italian"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Search Recipes by Ingredient",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/recipes/search?ingredient=Tomato",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "recipes", "search"],
+							"query": [
+								{
+									"key": "ingredient",
+									"value": "Tomato"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Mark Recipe as Favorite",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "{{userId}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/recipes/1/favorite",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "recipes", "1", "favorite"]
+						}
+					}
+				},
+				{
+					"name": "Unmark Recipe as Favorite",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "{{userId}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/recipes/1/unfavorite",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "recipes", "1", "unfavorite"]
+						}
+					}
+				},
+				{
+					"name": "Get Favorite Recipes",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/recipes/favorites",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "recipes", "favorites"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Ingredients",
+			"item": [
+				{
+					"name": "Get All Ingredients",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/ingredients",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "ingredients"]
+						}
+					}
+				},
+				{
+					"name": "Create Ingredient",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Paprika\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/ingredients",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "ingredients"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Meal Plans",
+			"item": [
+				{
+					"name": "Create Meal Plan",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "{{userId}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mealDate\": \"2026-09-29\",\n    \"mealType\": \"LUNCH\",\n    \"recipeId\": 1,\n    \"notes\": \"Family lunch gathering\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/meal-plans",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "meal-plans"]
+						}
+					}
+				},
+				{
+					"name": "Attempt Meal Plan With Non-Existing Recipe (Fails 404)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "{{userId}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mealDate\": \"2026-09-29\",\n    \"mealType\": \"LUNCH\",\n    \"recipeId\": 9999\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/meal-plans",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "meal-plans"]
+						}
+					}
+				},
+				{
+					"name": "Get All Meal Plans",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/meal-plans",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "meal-plans"]
+						}
+					}
+				},
+				{
+					"name": "Get Meal Plans for Week",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/meal-plans?startDate=2026-09-28&endDate=2026-10-04",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "meal-plans"],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2026-09-28"
+								},
+								{
+									"key": "endDate",
+									"value": "2026-10-04"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Meal Plan",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-User-Id",
+								"value": "{{userId}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mealDate\": \"2026-09-30\",\n    \"mealType\": \"DINNER\",\n    \"recipeId\": 1,\n    \"notes\": \"Moved to dinner\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/meal-plans/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "meal-plans", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Meal Plan",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-User-Id",
+								"value": "{{userId}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/meal-plans/1",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "meal-plans", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Shopping List",
+			"item": [
+				{
+					"name": "Get Weekly Consolidated Shopping List",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/shopping-list?startDate=2026-09-28&endDate=2026-10-04",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "shopping-list"],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2026-09-28"
+								},
+								{
+									"key": "endDate",
+									"value": "2026-10-04"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	]
+}
