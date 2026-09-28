@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<aside th:fragment="sidebar(activePage)" class="app-sidebar">
+    <!-- Brand Logo -->
+    <a th:href="@{/dashboard}" class="sidebar-brand">
+        <div class="brand-icon">
+            <i class="bi bi-egg-fried"></i>
+        </div>
+        <h1 class="brand-title">Recipe<span>Box</span></h1>
+    </a>
+
+    <!-- Navigation links -->
+    <nav class="sidebar-nav">
+        <a th:href="@{/dashboard}" class="sidebar-link" th:classappend="${activePage == 'dashboard'} ? 'active' : ''">
+            <i class="bi bi-grid-1x2-fill"></i>
+            <span>Dashboard</span>
+        </a>
+        <a th:href="@{/recipes}" class="sidebar-link" th:classappend="${activePage == 'recipes'} ? 'active' : ''">
+            <i class="bi bi-journal-bookmark-fill"></i>
+            <span>Recipes</span>
+        </a>
+        <a th:href="@{/favorites}" class="sidebar-link" th:classappend="${activePage == 'favorites'} ? 'active' : ''">
+            <i class="bi bi-heart-fill"></i>
+            <span>Favorites</span>
+        </a>
+        <a th:href="@{/meal-planner}" class="sidebar-link" th:classappend="${activePage == 'meal-planner'} ? 'active' : ''">
+            <i class="bi bi-calendar-week-fill"></i>
+            <span>Meal Planner</span>
+        </a>
+        <a th:href="@{/shopping-list}" class="sidebar-link" th:classappend="${activePage == 'shopping-list'} ? 'active' : ''">
+            <i class="bi bi-cart-check-fill"></i>
+            <span>Shopping List</span>
+        </a>
+        <a th:href="@{/profile}" class="sidebar-link" th:classappend="${activePage == 'profile'} ? 'active' : ''">
+            <i class="bi bi-person-fill"></i>
+            <span>Profile</span>
+        </a>
+
+        <div class="pt-4 px-2">
+            <a th:href="@{/recipes/add}" class="btn btn-rb-primary w-100 d-flex align-items-center justify-content-center gap-2">
+                <i class="bi bi-plus-circle-fill"></i>
+                <span>Add Recipe</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Sidebar footer / Current User -->
+    <div class="sidebar-footer">
+        <div class="user-snippet">
+            <div class="user-avatar" th:text="${session.CURRENT_USER_NAME != null ? #strings.substring(session.CURRENT_USER_NAME, 0, 1) : 'U'}">
+                U
+            </div>
+            <div class="flex-grow-1 overflow-hidden">
+                <div class="fw-bold text-truncate small" th:text="${session.CURRENT_USER_NAME != null ? session.CURRENT_USER_NAME : 'Home Cook'}">Home Cook</div>
+                <div class="text-muted text-truncate" style="font-size: 0.72rem;" th:text="${session.CURRENT_USER_EMAIL != null ? session.CURRENT_USER_EMAIL : 'cook@recipebox.com'}">cook@recipebox.com</div>
+            </div>
+            <a th:href="@{/logout}" class="btn btn-link text-muted p-1" title="Sign out">
+                <i class="bi bi-box-arrow-right fs-5"></i>
+            </a>
+        </div>
+    </div>
+</aside>
+</body>
+</html>

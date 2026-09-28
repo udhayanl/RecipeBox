@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Dashboard')}"></head>
+<body>
+<div class="app-wrapper">
+    <!-- Sidebar Fragment -->
+    <div th:replace="~{fragments/sidebar :: sidebar('dashboard')}"></div>
+    <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
+    <!-- Main Content Area -->
+    <div class="app-main">
+        <!-- Navbar Fragment -->
+        <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+        <!-- Main Body -->
+        <main class="app-content">
+            <!-- Dismissible Alerts -->
+            <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+            <!-- Dashboard Welcome Banner -->
+            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 pb-2">
+                <div>
+                    <h2 class="fw-bold mb-1">
+                        Welcome back, <span class="text-rb-primary" th:text="${session.CURRENT_USER_NAME != null ? session.CURRENT_USER_NAME : 'Chef'}">Chef</span>! 👋
+                    </h2>
+                    <p class="text-muted mb-0">Here is what is cooking in your kitchen and meal schedule this week.</p>
+                </div>
+                <div class="mt-3 mt-md-0 d-flex gap-2">
+                    <a th:href="@{/recipes/add}" class="btn btn-rb-primary d-flex align-items-center gap-2">
+                        <i class="bi bi-plus-lg"></i>
+                        <span>Add Recipe</span>
+                    </a>
+                    <a th:href="@{/meal-planner}" class="btn btn-rb-outline d-flex align-items-center gap-2">
+                        <i class="bi bi-calendar-plus"></i>
+                        <span>Plan a Meal</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Stat Cards Row -->
+            <div class="row g-3 mb-4">
+                <div class="col-xl-3 col-sm-6">
+                    <div class="stat-card">
+                        <div>
+                            <div class="text-muted small fw-semibold text-uppercase">Total Recipes</div>
+                            <div class="fs-2 fw-bold mt-1" th:text="${totalRecipes}">0</div>
+                            <div class="small text-muted mt-1"><i class="bi bi-book me-1 text-rb-primary"></i>In your collection</div>
+                        </div>
+                        <div class="stat-icon stat-icon-orange">
+                            <i class="bi bi-journal-richtext"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6">
+                    <div class="stat-card">
+                        <div>
+                            <div class="text-muted small fw-semibold text-uppercase">Favorites</div>
+                            <div class="fs-2 fw-bold mt-1" th:text="${favoriteCount}">0</div>
+                            <div class="small text-muted mt-1"><i class="bi bi-heart-fill me-1 text-danger"></i>Handpicked dishes</div>
+                        </div>
+                        <div class="stat-icon stat-icon-red">
+                            <i class="bi bi-heart"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6">
+                    <div class="stat-card">
+                        <div>
+                            <div class="text-muted small fw-semibold text-uppercase">Planned This Week</div>
+                            <div class="fs-2 fw-bold mt-1" th:text="${plannedThisWeek}">0</div>
+                            <div class="small text-muted mt-1"><i class="bi bi-calendar-event me-1 text-warning"></i>Active meal schedule</div>
+                        </div>
+                        <div class="stat-icon stat-icon-amber">
+                            <i class="bi bi-calendar3"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6">
+                    <div class="stat-card">
+                        <div>
+                            <div class="text-muted small fw-semibold text-uppercase">Upcoming Meals</div>
+                            <div class="fs-2 fw-bold mt-1" th:text="${upcomingMealsCount}">0</div>
+                            <div class="small text-muted mt-1"><i class="bi bi-clock-history me-1 text-success"></i>Next 7 days</div>
+                        </div>
+                        <div class="stat-icon stat-icon-green">
+                            <i class="bi bi-check2-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions Banner -->
+            <div class="rb-card p-4 mb-4" style="background: linear-gradient(135deg, #FFF6EE 0%, #FFFFFF 100%);">
+                <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="brand-icon" style="width: 48px; height: 48px; font-size: 1.5rem;">
+                            <i class="bi bi-lightning-charge-fill"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-1">Quick Actions</h5>
+                            <p class="text-muted mb-0 small">Jump right into managing your meals, creating new dishes, or preparing your grocery list.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a th:href="@{/recipes/add}" class="btn btn-sm btn-rb-primary">
+                            <i class="bi bi-plus-circle me-1"></i> Add Recipe
+                        </a>
+                        <a th:href="@{/meal-planner}" class="btn btn-sm btn-rb-outline">
+                            <i class="bi bi-calendar-week me-1"></i> Plan a Meal
+                        </a>
+                        <a th:href="@{/shopping-list}" class="btn btn-sm btn-outline-dark rounded-3 px-3">
+                            <i class="bi bi-cart3 me-1"></i> View Shopping List
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Meals & Weekly Overview Row -->
+            <div class="row g-4 mb-4">
+                <!-- Upcoming Meals List -->
+                <div class="col-lg-6">
+                    <div class="rb-card p-4 h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-clock-history text-rb-primary fs-5"></i>
+                                <h5 class="fw-bold mb-0">Upcoming Meals</h5>
+                            </div>
+                            <a th:href="@{/meal-planner}" class="small fw-semibold text-rb-primary">Full Calendar &rarr;</a>
+                        </div>
+
+                        <div th:if="${#lists.isEmpty(upcomingMeals)}" class="text-center py-5">
+                            <div class="text-muted fs-1 mb-2">🍽️</div>
+                            <h6 class="fw-bold text-dark">No meals planned for the next 7 days</h6>
+                            <p class="text-muted small mb-3">Plan your dinners, lunches, and snacks ahead to save time and grocery waste.</p>
+                            <a th:href="@{/meal-planner}" class="btn btn-sm btn-rb-primary">Plan a Meal Now</a>
+                        </div>
+
+                        <div th:unless="${#lists.isEmpty(upcomingMeals)}" class="d-flex flex-direction-column flex-column gap-2">
+                            <div th:each="meal : ${upcomingMeals}" class="p-3 rounded-3 border d-flex align-items-center justify-content-between hover-shadow transition" style="background: #FAFAFA;">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+                                         style="width: 42px; height: 42px;"
+                                         th:classappend="${meal.mealType.name() == 'BREAKFAST' ? 'bg-warning' : (meal.mealType.name() == 'LUNCH' ? 'bg-primary' : (meal.mealType.name() == 'DINNER' ? 'bg-danger' : 'bg-success'))}">
+                                        <i th:class="${meal.mealType.name() == 'BREAKFAST' ? 'bi bi-cup-hot' : (meal.mealType.name() == 'LUNCH' ? 'bi bi-sun' : (meal.mealType.name() == 'DINNER' ? 'bi bi-moon-stars' : 'bi bi-apple'))}"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark" th:text="${meal.recipeName}">Butter Chicken</div>
+                                        <div class="small text-muted">
+                                            <span class="badge bg-light text-dark border me-1" th:text="${meal.mealType}">DINNER</span>
+                                            <i class="bi bi-calendar me-1"></i><span th:text="${#temporals.format(meal.mealDate, 'EEE, MMM dd')}">Mon, Sep 28</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <a th:href="@{/recipes/{id}(id=${meal.recipeId})}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                                        View Recipe
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- This Week Meal Overview -->
+                <div class="col-lg-6">
+                    <div class="rb-card p-4 h-100">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-calendar2-range text-rb-secondary fs-5"></i>
+                                <h5 class="fw-bold mb-0">This Week Overview</h5>
+                            </div>
+                            <span class="badge bg-rb-light text-rb-primary border px-2 py-1" th:text="${plannedThisWeek} + ' Meals scheduled'">5 Meals scheduled</span>
+                        </div>
+
+                        <div th:if="${#lists.isEmpty(weekMeals)}" class="text-center py-5">
+                            <div class="text-muted fs-1 mb-2">🗓️</div>
+                            <h6 class="fw-bold text-dark">No meals scheduled this week</h6>
+                            <p class="text-muted small mb-3">Add recipes to your weekly schedule to automatically generate your consolidated shopping list.</p>
+                            <a th:href="@{/meal-planner}" class="btn btn-sm btn-rb-outline">Open Weekly Matrix</a>
+                        </div>
+
+                        <div th:unless="${#lists.isEmpty(weekMeals)}" class="d-flex flex-column gap-2">
+                            <div th:each="meal : ${weekMeals}" class="p-2 px-3 rounded-3 border d-flex align-items-center justify-content-between" style="background: #FFFFFF;">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="badge bg-rb-primary-light text-rb-primary fw-bold" th:text="${#temporals.format(meal.mealDate, 'EEE')}">Mon</span>
+                                    <span class="small fw-semibold text-muted text-uppercase" th:text="${meal.mealType}">LUNCH</span>
+                                    <span class="fw-bold text-dark ms-2" th:text="${meal.recipeName}">Dal Tadka</span>
+                                </div>
+                                <span class="badge bg-light text-muted border rounded-pill">Scheduled</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Favourite Recipes Carousel / Cards -->
+            <div class="mb-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-heart-fill text-danger fs-5"></i>
+                        <h4 class="fw-bold mb-0">Favourite Recipes</h4>
+                    </div>
+                    <a th:href="@{/favorites}" class="small fw-semibold text-rb-primary">View All Favorites &rarr;</a>
+                </div>
+
+                <div th:if="${#lists.isEmpty(favoriteRecipes)}" class="rb-card p-5 text-center">
+                    <div class="fs-1 text-muted mb-2">❤️</div>
+                    <h5 class="fw-bold text-dark">No favourite recipes yet</h5>
+                    <p class="text-muted small mb-3">Click the heart icon on any recipe to save it here for quick access.</p>
+                    <a th:href="@{/recipes}" class="btn btn-rb-outline btn-sm">Explore Recipes</a>
+                </div>
+
+                <div th:unless="${#lists.isEmpty(favoriteRecipes)}" class="row g-3">
+                    <div th:each="recipe : ${favoriteRecipes}" class="col-xl-3 col-lg-4 col-sm-6">
+                        <div class="recipe-card">
+                            <div class="recipe-card-media">
+                                <div class="recipe-icon-bg">🍲</div>
+                                <span class="cuisine-pill" th:text="${recipe.cuisine}">Indian</span>
+                                <form th:id="'fav-form-' + ${recipe.id}" th:action="@{/recipes/{id}/favorite(id=${recipe.id})}" method="post">
+                                    <input type="hidden" name="currentStatus" value="true" />
+                                    <input type="hidden" name="returnUrl" value="/dashboard" />
+                                    <button type="submit" class="favorite-badge-btn active" title="Remove favorite">
+                                        <i class="bi bi-heart-fill text-danger"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="recipe-card-body">
+                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                    <span class="recipe-time-badge">
+                                        <i class="bi bi-clock"></i>
+                                        <span th:text="${recipe.preparationTime} + ' mins'">30 mins</span>
+                                    </span>
+                                </div>
+                                <h5 class="fw-bold text-dark mb-2 text-truncate" th:text="${recipe.name}">Recipe Name</h5>
+                                <p class="text-muted small mb-3 text-truncate-2" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 38px;" th:text="${recipe.description != null ? recipe.description : 'Delicious homemade meal made with fresh ingredients.'}">Description</p>
+                                <div class="mt-auto pt-2 border-top d-flex gap-2">
+                                    <a th:href="@{/recipes/{id}(id=${recipe.id})}" class="btn btn-sm btn-rb-primary flex-grow-1">View</a>
+                                    <a th:href="@{/recipes/{id}/edit(id=${recipe.id})}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer Fragment -->
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </div>
+</div>
+
+<!-- Bootstrap 5 Bundle JS & App Script -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

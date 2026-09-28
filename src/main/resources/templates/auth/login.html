@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Login')}"></head>
+<body>
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <!-- Logo and Title -->
+        <div class="text-center mb-4">
+            <div class="brand-icon mx-auto mb-2" style="width: 48px; height: 48px; font-size: 1.5rem;">
+                <i class="bi bi-egg-fried"></i>
+            </div>
+            <h2 class="fw-bold mb-1">Recipe<span class="text-rb-primary">Box</span></h2>
+            <p class="text-muted small">Welcome back! Sign in to access your personal recipe vault.</p>
+        </div>
+
+        <!-- Flash messages -->
+        <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+        <!-- Login Form -->
+        <form th:action="@{/login}" method="post">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email address</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-envelope"></i></span>
+                    <input type="email" id="email" name="email" class="form-control border-start-0"
+                           placeholder="chef@recipebox.com" th:value="${email != null ? email : 'alex@example.com'}" required />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <label for="password" class="form-label mb-0">Password</label>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-lock"></i></span>
+                    <input type="password" id="password" name="password" class="form-control border-start-0 border-end-0"
+                           placeholder="••••••••" value="password123" required />
+                    <button type="button" class="btn btn-outline-secondary border-start-0 toggle-password-btn" data-target="password">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="rememberMe" name="rememberMe" checked />
+                    <label class="form-check-label small text-muted" for="rememberMe">Remember me</label>
+                </div>
+                <span class="small text-muted">Demo: alex@example.com</span>
+            </div>
+
+            <button type="submit" class="btn btn-rb-primary w-100 py-2 mb-3 shadow-sm">
+                Sign In
+            </button>
+
+            <div class="text-center small text-muted">
+                Don't have an account?
+                <a th:href="@{/register}" class="fw-bold text-rb-primary ms-1">Create an account</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

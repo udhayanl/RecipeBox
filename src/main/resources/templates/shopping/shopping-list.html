@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Weekly Shopping List')}"></head>
+<body>
+<div class="app-wrapper">
+    <div th:replace="~{fragments/sidebar :: sidebar('shopping-list')}"></div>
+    <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
+    <div class="app-main">
+        <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+        <main class="app-content">
+            <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+            <!-- Page Title & Actions -->
+            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 gap-3">
+                <div>
+                    <h2 class="fw-bold mb-1">Consolidated Shopping List</h2>
+                    <p class="text-muted mb-0">Automatically aggregated groceries from all planned meals during your selected dates.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" onclick="window.print()" class="btn btn-outline-dark d-flex align-items-center gap-2">
+                        <i class="bi bi-printer"></i>
+                        <span>Print List</span>
+                    </button>
+                    <a th:href="@{/meal-planner}" class="btn btn-rb-outline d-flex align-items-center gap-2">
+                        <i class="bi bi-calendar-week"></i>
+                        <span>Edit Meal Plan</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Date Range Selector Filter Card -->
+            <div class="rb-card p-3 p-md-4 mb-4">
+                <form th:action="@{/shopping-list}" method="get" class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label for="startDate" class="form-label">Start Date</label>
+                        <input type="date" id="startDate" name="startDate" class="form-control" th:value="${#temporals.format(startDate, 'yyyy-MM-dd')}" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label for="endDate" class="form-label">End Date</label>
+                        <input type="date" id="endDate" name="endDate" class="form-control" th:value="${#temporals.format(endDate, 'yyyy-MM-dd')}" required />
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-rb-primary w-100 py-2 d-flex align-items-center justify-content-center gap-2">
+                            <i class="bi bi-arrow-repeat"></i>
+                            <span>Generate Shopping List</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Shopping List Banner -->
+            <div class="rb-card p-4 mb-4">
+                <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2 mb-3 pb-3 border-bottom">
+                    <div>
+                        <span class="text-muted small">Consolidated Groceries</span>
+                        <h4 class="fw-bold text-dark mb-0">
+                            Shopping List for <span class="text-rb-primary" th:text="${#temporals.format(startDate, 'dd MMM')} + ' – ' + ${#temporals.format(endDate, 'dd MMM yyyy')}">28 Sep – 04 Oct 2026</span>
+                        </h4>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <span id="checkedItemsCount" class="badge bg-rb-light text-rb-primary border px-3 py-2 fs-6">
+                            0 / <span th:text="${totalItems}">0</span> purchased
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div th:if="${#lists.isEmpty(items)}" class="text-center py-5">
+                    <div class="display-3 text-muted mb-3">🛒</div>
+                    <h5 class="fw-bold text-dark">No planned recipes in this date range</h5>
+                    <p class="text-muted small mb-4">Add recipes to your meal planner during this period, and your grocery items will appear here automatically.</p>
+                    <a th:href="@{/meal-planner}" class="btn btn-rb-primary px-4 rounded-pill">
+                        <i class="bi bi-calendar-plus me-1"></i> Plan Meals for This Week
+                    </a>
+                </div>
+
+                <!-- Shopping List Items Checklist -->
+                <div th:unless="${#lists.isEmpty(items)}">
+                    <div class="small fw-semibold text-muted mb-2 px-1 d-flex justify-content-between">
+                        <span>ITEM / INGREDIENT</span>
+                        <span>AGGREGATED QUANTITY</span>
+                    </div>
+
+                    <div th:each="item, stat : ${items}" class="shopping-item-row">
+                        <div class="form-check d-flex align-items-center gap-2 mb-0">
+                            <input class="form-check-input shopping-checkbox fs-5 mt-0"
+                                   type="checkbox"
+                                   th:id="'itemCheck-' + ${stat.index}"
+                                   th:data-item-id="${stat.index}"
+                                   value="" />
+                            <label class="form-check-label item-name fw-semibold text-dark fs-6 ms-2 cursor-pointer"
+                                   th:for="'itemCheck-' + ${stat.index}"
+                                   th:text="${item.ingredientName}">
+                                Tomato
+                            </label>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-white text-dark border px-3 py-2 shadow-sm rounded-pill fs-6">
+                                <strong th:text="${#numbers.formatDecimal(item.quantity, 1, (item.quantity == item.quantity.longValue() ? 0 : 2))}">2</strong>
+                                <span th:text="${item.unit}">pieces</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

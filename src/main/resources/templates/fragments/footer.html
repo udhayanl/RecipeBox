@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<footer th:fragment="footer" class="app-footer">
+    <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2">
+        <div>
+            &copy; 2026 <strong>RecipeBox</strong> – Personal Recipe &amp; Meal Planner. All rights reserved.
+        </div>
+        <div class="d-flex gap-3 small">
+            <a th:href="@{/recipes}" class="text-muted">Recipes</a>
+            <a th:href="@{/meal-planner}" class="text-muted">Meal Planner</a>
+            <a th:href="@{/shopping-list}" class="text-muted">Shopping List</a>
+            <a th:href="@{/swagger-ui.html}" class="text-muted" target="_blank">Swagger API</a>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

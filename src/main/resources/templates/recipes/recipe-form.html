@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${isEdit} ? 'Edit Recipe' : 'Add Recipe')}"></head>
+<body>
+<div class="app-wrapper">
+    <div th:replace="~{fragments/sidebar :: sidebar('recipes')}"></div>
+    <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
+    <div class="app-main">
+        <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+        <main class="app-content">
+            <div th:replace="~{fragments/alerts :: alerts}"></div>
+
+            <!-- Page Title -->
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1" th:text="${isEdit} ? 'Edit Recipe' : 'Create New Recipe'">Create Recipe</h2>
+                    <p class="text-muted mb-0">Fill in the recipe details, list your ingredients, and add step-by-step cooking instructions.</p>
+                </div>
+                <a th:href="${isEdit} ? @{/recipes/{id}(id=${recipeId})} : @{/recipes}" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-lg me-1"></i> Cancel
+                </a>
+            </div>
+
+            <!-- Form Card -->
+            <form id="recipeForm"
+                  th:action="${isEdit} ? @{/recipes/{id}/edit(id=${recipeId})} : @{/recipes/add}"
+                  th:object="${recipeForm}"
+                  method="post"
+                  class="needs-validation">
+
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="row g-4">
+                    <!-- Column 1: Basic Recipe Information -->
+                    <div class="col-lg-6">
+                        <div class="rb-card p-4 h-100">
+                            <h5 class="fw-bold mb-3 d-flex align-items-center gap-2 border-bottom pb-2">
+                                <i class="bi bi-info-circle text-rb-primary"></i>
+                                Basic Recipe Information
+                            </h5>
+
+                            <!-- Recipe Name -->
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Recipe Name <span class="text-danger">*</span></label>
+                                <input type="text" id="name" th:field="*{name}" class="form-control"
+                                       th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+                                       placeholder="e.g. Authentic Butter Chicken" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+                                    Recipe name cannot be empty.
+                                </div>
+                            </div>
+
+                            <!-- Cuisine & Prep Time in a row -->
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-7">
+                                    <label for="cuisine" class="form-label">Cuisine <span class="text-danger">*</span></label>
+                                    <input type="text" id="cuisine" th:field="*{cuisine}" class="form-control"
+                                           th:classappend="${#fields.hasErrors('cuisine')} ? 'is-invalid' : ''"
+                                           placeholder="e.g. Indian, Italian, Mexican" list="cuisineSuggestions" required>
+                                    <datalist id="cuisineSuggestions">
+                                        <option value="Indian"></option>
+                                        <option value="Italian"></option>
+                                        <option value="Chinese"></option>
+                                        <option value="Mexican"></option>
+                                        <option value="American"></option>
+                                        <option value="Mediterranean"></option>
+                                        <option value="Thai"></option>
+                                        <option value="Japanese"></option>
+                                    </datalist>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('cuisine')}" th:errors="*{cuisine}">
+                                        Cuisine is required.
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <label for="preparationTime" class="form-label">Prep Time (mins) <span class="text-danger">*</span></label>
+                                    <input type="number" id="preparationTime" th:field="*{preparationTime}" min="1" class="form-control"
+                                           th:classappend="${#fields.hasErrors('preparationTime')} ? 'is-invalid' : ''"
+                                           placeholder="Minutes" required>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('preparationTime')}" th:errors="*{preparationTime}">
+                                        Must be at least 1 min.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description (Optional)</label>
+                                <textarea id="description" th:field="*{description}" class="form-control" rows="4"
+                                          placeholder="Share what makes this dish special, flavor profile, or serving suggestions..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Ingredients Section -->
+                    <div class="col-lg-6">
+                        <div class="rb-card p-4 h-100">
+                            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                                <h5 class="fw-bold mb-0 d-flex align-items-center gap-2">
+                                    <i class="bi bi-cart3 text-rb-secondary"></i>
+                                    Ingredients List
+                                </h5>
+                                <button type="button" id="addIngredientBtn" class="btn btn-sm btn-rb-outline d-flex align-items-center gap-1">
+                                    <i class="bi bi-plus-circle"></i> Add Ingredient
+                                </button>
+                            </div>
+
+                            <p class="text-muted small mb-3">Add items with their exact quantities and units (e.g., 2 pieces, 500 grams, 2 tbsp).</p>
+
+                            <div id="ingredientsContainer">
+                                <div th:each="ing, stat : *{ingredients}" class="row g-2 mb-2 align-items-center ingredient-row">
+                                    <div class="col-md-5 col-12">
+                                        <input type="text"
+                                               th:field="*{ingredients[__${stat.index}__].ingredientName}"
+                                               class="form-control"
+                                               placeholder="e.g. Tomatoes" required />
+                                    </div>
+                                    <div class="col-md-3 col-6">
+                                        <input type="number" step="any" min="0.1"
+                                               th:field="*{ingredients[__${stat.index}__].quantity}"
+                                               class="form-control"
+                                               placeholder="Qty" required />
+                                    </div>
+                                    <div class="col-md-3 col-4">
+                                        <input type="text"
+                                               th:field="*{ingredients[__${stat.index}__].unit}"
+                                               class="form-control"
+                                               placeholder="Unit (e.g. pcs, grams, tbsp)" required />
+                                    </div>
+                                    <div class="col-md-1 col-2 text-end">
+                                        <button type="button" class="btn btn-outline-danger btn-sm rounded-circle remove-ingredient-btn" title="Remove ingredient">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cooking Steps Full-Width Section -->
+                    <div class="col-12">
+                        <div class="rb-card p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                                <h5 class="fw-bold mb-0 d-flex align-items-center gap-2">
+                                    <i class="bi bi-list-ol text-rb-primary"></i>
+                                    Cooking Instructions / Steps <span class="text-danger">*</span>
+                                </h5>
+                                <button type="button" id="addStepBtn" class="btn btn-sm btn-rb-outline d-flex align-items-center gap-1">
+                                    <i class="bi bi-plus-circle"></i> Add Step
+                                </button>
+                            </div>
+
+                            <p class="text-muted small mb-3">Write detailed instructions step by step. You can also paste or edit the full instructions directly.</p>
+
+                            <!-- Dynamic Step Rows Container -->
+                            <div id="stepsContainer" class="mb-3">
+                                <!-- Initial fallback or populated from existing steps -->
+                                <div class="d-flex gap-2 mb-2 align-items-start step-row">
+                                    <span class="badge bg-rb-primary rounded-circle d-flex align-items-center justify-content-center mt-2 step-badge" style="width: 28px; height: 28px; flex-shrink: 0;">1</span>
+                                    <div class="flex-grow-1">
+                                        <textarea class="form-control step-input" rows="2" placeholder="e.g. Wash and soak the basmati rice for 30 minutes." required></textarea>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-danger btn-sm rounded-circle mt-1 remove-step-btn" title="Remove step">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Raw steps textarea fallback/binder -->
+                            <div class="mt-3">
+                                <label for="cookingStepsTextarea" class="form-label small text-muted">Complete Instructions Summary:</label>
+                                <textarea id="cookingStepsTextarea" th:field="*{cookingSteps}" class="form-control" rows="4"
+                                          th:classappend="${#fields.hasErrors('cookingSteps')} ? 'is-invalid' : ''"
+                                          placeholder="Step 1: ...&#10;Step 2: ..."></textarea>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('cookingSteps')}" th:errors="*{cookingSteps}">
+                                    Cooking steps cannot be empty.
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top">
+                                <a th:href="${isEdit} ? @{/recipes/{id}(id=${recipeId})} : @{/recipes}" class="btn btn-outline-secondary px-4 rounded-pill">
+                                    Cancel
+                                </a>
+                                <button type="submit" class="btn btn-rb-primary px-5 rounded-pill shadow-sm">
+                                    <i class="bi bi-check-lg me-1"></i>
+                                    <span th:text="${isEdit} ? 'Update Recipe' : 'Save Recipe'">Save Recipe</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </main>
+
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+<script th:inline="javascript">
+/* Pre-populate step rows from cookingSteps if editing */
+document.addEventListener('DOMContentLoaded', () => {
+    const rawSteps = /*[[${recipeForm.cookingSteps}]]*/ '';
+    if (rawSteps && rawSteps.trim().length > 0) {
+        const lines = rawSteps.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        if (lines.length > 0) {
+            const container = document.getElementById('stepsContainer');
+            container.innerHTML = '';
+            lines.forEach((line, idx) => {
+                // Strip existing "Step X: " prefix if present
+                const cleanLine = line.replace(/^Step\s*\d+:\s*/i, '');
+                const row = document.createElement('div');
+                row.className = 'd-flex gap-2 mb-2 align-items-start step-row dynamic-row';
+                row.innerHTML = `
+                    <span class="badge bg-rb-primary rounded-circle d-flex align-items-center justify-content-center mt-2 step-badge" style="width: 28px; height: 28px; flex-shrink: 0;">${idx + 1}</span>
+                    <div class="flex-grow-1">
+                        <textarea class="form-control step-input" rows="2" required>${cleanLine}</textarea>
+                    </div>
+                    <button type="button" class="btn btn-outline-danger btn-sm rounded-circle mt-1 remove-step-btn" title="Remove step">
+                        <i class="bi bi-trash3"></i>
+                    </button>
+                `;
+                container.appendChild(row);
+            });
+        }
+    }
+});
+</script>
+</body>
+</html>
