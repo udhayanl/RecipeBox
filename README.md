@@ -158,3 +158,28 @@ For step-by-step modular repository pushing, commits are structured cleanly:
 4. REST API Controllers (`/api/**`)
 5. Thymeleaf Web Views & UI Controllers (`/dashboard`, `/recipes`, `/meal-planner`, `/shopping-list`, `/profile`)
 6. Comprehensive Automated Tests & Documentation
+
+---
+
+## 9. Deploying to Render
+
+RecipeBox is Dockerized and ready for 1-click cloud deployment on [Render](https://render.com).
+
+### Deployment Steps on Render:
+1. Log in to [Render Dashboard](https://dashboard.render.com).
+2. Click **New +** -> **Web Service**.
+3. Connect your GitHub repository: `https://github.com/udhayanl/RecipeBox`.
+4. Configure service settings:
+   - **Environment**: `Docker`
+   - **Branch**: `main`
+   - **Plan**: `Free`
+   - **Dockerfile Path**: `./Dockerfile`
+5. Click **Create Web Service**.
+
+Render will automatically build the container and deploy the application with live health checks at `/dashboard`.
+
+### Environment Variables on Render (Optional):
+- `PORT`: Automatically set by Render.
+- `DB_URL`: (Optional) Remote MySQL connection URL if connecting to an external database (e.g. Aiven, TiDB).
+- `DB_USERNAME`: (Optional) Remote MySQL username.
+- `DB_PASSWORD`: (Optional) Remote MySQL password.
